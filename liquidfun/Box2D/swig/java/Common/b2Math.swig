@@ -31,10 +31,12 @@ struct b2Vec2 {
 /// b2Transform struct
 struct b2Transform {
     b2Transform();
-
     void SetIdentity();
     float32 GetPositionX();
     float32 GetPositionY();
+	float32 GetAngle();
     float32 GetRotationSin();
     float32 GetRotationCos();
+    
+    b2Vec2 p;
 };

@@ -30,6 +30,6 @@ public:
     b2QueryCallback() {}
     virtual ~b2QueryCallback();
     virtual bool ReportFixture(b2Fixture* fixture) = 0;
-    virtual bool ReportParticle(const b2ParticleSystem* particleSystem,
-                                int32 index);
+    virtual bool ReportParticle(const b2ParticleSystem* particleSystem, int32 index);
+    virtual bool ShouldQueryParticleSystem(const b2ParticleSystem *particleSystem);
 };

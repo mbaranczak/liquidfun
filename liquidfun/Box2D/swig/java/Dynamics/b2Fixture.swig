@@ -21,12 +21,18 @@
 /// b2FixtureDef class
 struct b2FixtureDef {
     const b2Shape* shape;
+    float32 friction;
+    float32 restitution;
+	float32 density;
 };
 
 %nodefaultctor;      // don't create default constructors
 %nodefaultdtor;      // don't create default destructors
 /// b2Fixture class
 class b2Fixture {
+public:
+	bool TestPoint(const b2Vec2 &p) const;
+	const b2Fixture* GetNext() const;
 };
 %clearnodefaultdtor; // Re-enable default constructors
 %clearnodefaultctor; // Re-enable default destructors

@@ -24,24 +24,22 @@ class b2Body;
 /// b2World class
 class b2World {
 public:
-		b2World(float32 gravityX, float32 gravityY);
+	b2World(float32 gravityX, float32 gravityY);
     ~b2World();
 
     void SetDebugDraw(b2Draw* debugDraw);
-
+    void DrawDebugData();
     b2Body* CreateBody(const b2BodyDef* def);
     void DestroyBody(b2Body* body);
-
     void Step(
             float32 timeStep,
             int32 velocityIterations,
             int32 positionIterations,
             int32 particleIterations);
-    void DrawDebugData();
-
     int32 GetBodyCount() const;
-
+    b2Body* GetBodyList();
     b2ParticleSystem* CreateParticleSystem(const b2ParticleSystemDef* def);
-
     void SetGravity(float32 gravityX, float32 gravityY);
+    void QueryShapeAABB(b2QueryCallback *callback, const b2Shape &shape, const b2Transform &xf) const;
+    int CalculateReasonableParticleIterations(float32 timeStep) const;
 };

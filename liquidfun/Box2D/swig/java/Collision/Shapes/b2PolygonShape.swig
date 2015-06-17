@@ -22,6 +22,26 @@
 /// class with no default constructors
 %feature("notabstract") b2PolygonShape;
 
+%typemap(jni) (b2Vec2 *points, int32 count) "jobject"
+%typemap(jtype) (b2Vec2 *points, int32 count) "java.nio.ByteBuffer"
+%typemap(jstype) (b2Vec2 *points, int32 count) "java.nio.ByteBuffer"
+%typemap(javain) (b2Vec2 *points, int32 count) "$javainput"
+%typemap(javaout) (b2Vec2 *points, int32 count) {
+    return $jnicall;
+}
+// This extracts the Java ByteBuffer address from C++
+%typemap(in) (b2Vec2 *points, int32 count) {
+    $1 = (b2Vec2*) jenv->GetDirectBufferAddress($input);
+    $2 = jenv->GetDirectBufferCapacity($input) / 8;
+    if (($1 == NULL) && ($2 != 0)) {
+        SWIG_JavaThrowException(
+                jenv,
+                SWIG_JavaRuntimeException,
+                "Unable to get address of java.nio.ByteBuffer. "
+                "Is the ByteBuffer initialized?");
+    }
+}
+
 class b2PolygonShape : public b2Shape {
 public:
     b2PolygonShape();
@@ -33,4 +53,8 @@ public:
                   float32 centerX,
                   float32 centerY,
                   float32 angle);
+    void Set(b2Vec2 *points, int32 count);
 };
+
+/// Clear the typemaps
+%clear (void* outBuf, int size);

@@ -442,6 +442,9 @@ struct b2Transform
 
 	/// Get cosine-component of q.
 	float32 GetRotationCos() const { return q.c; }
+
+	/// Get rotation angle.
+	float32 GetAngle() const { return q.GetAngle(); }
 #endif // LIQUIDFUN_EXTERNAL_LANGUAGE_API
 
 	b2Vec2 p;
