@@ -23,6 +23,15 @@ public:
 	void SetTangentSpeed(float32 speed);
 	float32 GetTangentSpeed() const;
 };
+
+struct b2ContactEdge
+{
+	b2Body* other;          
+	b2Contact* contact;     
+	b2ContactEdge* prev;    
+	b2ContactEdge* next;    
+};
+
 %clearnodefaultdtor; // Re-enable default constructors
 %clearnodefaultctor; // Re-enable default destructors
 

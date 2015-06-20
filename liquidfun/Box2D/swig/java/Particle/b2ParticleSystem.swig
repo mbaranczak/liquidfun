@@ -96,6 +96,11 @@ public:
     float GetParticlePositionX(int32 index) const;
     float GetParticlePositionY(int32 index) const;
 
+	const b2ParticleContact* GetContacts() const;
+	int32 GetContactCount() const;
+	const b2ParticleBodyContact* GetBodyContacts() const;
+	int32 GetBodyContactCount() const;
+
     int CopyPositionBuffer(
             int startIndex, int numParticles, void* outBuf, int size) const;
     int CopyColorBuffer(

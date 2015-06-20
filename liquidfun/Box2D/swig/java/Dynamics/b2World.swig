@@ -43,5 +43,7 @@ public:
     void QueryShapeAABB(b2QueryCallback *callback, const b2Shape &shape, const b2Transform &xf) const;
     int CalculateReasonableParticleIterations(float32 timeStep) const;
 	void SetContactListener(b2ContactListener *listener);
+	const b2Contact * GetContactList() const;
+	int32 GetContactCount() const;
 };
 
