@@ -23,10 +23,6 @@
 %include "enums.swg"
 %javaconst(1);
 
-/// b2BodyDef class
-// Ignore userData
-%ignore b2BodyDef::userData;
-
 /// b2Body class
 /// C++ implementation does not have default public ctors and dtors. Don't
 /// allow them as SWIG will add them otherwise and cause compile errors.
@@ -42,10 +38,7 @@
 %warnfilter(516) b2Body::GetNext;
 %warnfilter(516) b2Body::GetWorld;
 
-// Ignore userData
 %ignore b2Body::m_userData;
-%ignore b2Body::GetUserData;
-%ignore b2Body::SetUserData;
 
 /// Include original .h file for SWIG
 /// The original file is simple enough we will just pull it in

@@ -61,6 +61,26 @@ typedef unsigned char uint8;
 // rename the == operator
 %rename(equals) operator==;
 
+// Convert void* to java.lang.Object, so we can attach Java objects to
+// the native classes that have (Get|Set)UserData functions.
+%typemap(jni) void* "jobject"
+%typemap(jtype) void* "Object"
+%typemap(jstype) void* "Object"
+%typemap(javain) void* "$javainput"
+%typemap(javaout) void* { 
+	return $jnicall; 
+}
+%typemap(out) void* {
+	jresult = (jobject) $1;
+}
+%typemap(in) void* {
+	// Why this bit is necessary: 
+	// http://developer.android.com/training/articles/perf-jni.html#local_and_global_references
+	$1 = jenv->NewGlobalRef($input);
+	// TODO: call DeleteGlobalRef() when no longer needed.
+}
+
+
 // We need to include b2Settings.h separately for swig to parse certain macros
 %include "Common/b2Settings.swig"
 
