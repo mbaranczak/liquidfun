@@ -77,6 +77,7 @@ typedef unsigned char uint8;
 %include "Dynamics/b2Fixture.swig"
 %include "Dynamics/b2World.swig"
 %include "Dynamics/b2WorldCallbacks.swig"
+%include "Dynamics/Contacts/b2Contact.swig"
 
 %include "Particle/b2Particle.swig"
 %include "Particle/b2ParticleGroup.swig"

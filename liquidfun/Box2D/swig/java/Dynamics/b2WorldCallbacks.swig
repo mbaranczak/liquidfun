@@ -33,3 +33,29 @@ public:
     virtual bool ReportParticle(const b2ParticleSystem* particleSystem, int32 index);
     virtual bool ShouldQueryParticleSystem(const b2ParticleSystem *particleSystem);
 };
+
+
+
+%feature("director") b2ContactListener;
+
+%nodefaultctor b2ContactListener;
+class b2ContactListener
+{
+public:
+	b2ContactListener() {}
+	virtual ~b2ContactListener();
+	virtual void BeginContact(b2Contact* contact);
+	virtual void EndContact(b2Contact* contact);
+	virtual void BeginContact(b2ParticleSystem* particleSystem,
+							  b2ParticleBodyContact* particleBodyContact);
+	virtual void EndContact(b2Fixture* fixture,
+							b2ParticleSystem* particleSystem, int32 index);
+	virtual void BeginContact(b2ParticleSystem* particleSystem,
+							  b2ParticleContact* particleContact);
+	virtual void EndContact(b2ParticleSystem* particleSystem,
+							int32 indexA, int32 indexB);
+	//virtual void PreSolve(b2Contact* contact, const b2Manifold* oldManifold);
+	//virtual void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
+};
+
+

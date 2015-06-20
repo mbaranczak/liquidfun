@@ -104,12 +104,12 @@ public:
             int startIndex, int numParticles, void* outBuf, int size) const;
 };
 
-/// Ignore other classes
-%ignore b2ParticleContact;
-%ignore b2ParticleBodyContact;
 
 // Ignore the original version of b2ParticleSystem as it's too complex
 %ignore b2ParticleSystem;
+
+// Ignore warning about != operator
+%warnfilter(503) b2ParticleContact::operator!=;
 
 /// Include original .h file for SWIG
 /// The original file is simple enough we will just pull it in

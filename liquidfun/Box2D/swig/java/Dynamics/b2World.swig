@@ -42,4 +42,6 @@ public:
     void SetGravity(float32 gravityX, float32 gravityY);
     void QueryShapeAABB(b2QueryCallback *callback, const b2Shape &shape, const b2Transform &xf) const;
     int CalculateReasonableParticleIterations(float32 timeStep) const;
+	void SetContactListener(b2ContactListener *listener);
 };
+
