@@ -19,6 +19,7 @@
 %module(directors="1") b2WorldCallbacks;
 
 %feature("director") b2QueryCallback;
+%typemap(javaclassmodifiers) b2QueryCallback "public abstract class";
 
 /// Forward declarations
 class b2ParticleSystem;
@@ -37,6 +38,7 @@ public:
 
 
 %feature("director") b2ContactListener;
+%typemap(javaclassmodifiers) b2ContactListener "public abstract class";
 
 %nodefaultctor b2ContactListener;
 class b2ContactListener
