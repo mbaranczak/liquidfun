@@ -23,25 +23,9 @@
 %include "enums.swg"
 %javaconst(1);
 
-
-// Convert void* to UserObject, so we can attach Java objects to
-// the native classes that have (Get|Set)UserData functions.
-%typemap(jni) void* "jobject"
-%typemap(jtype) void*  "com.google.fpl.liquidfun.UserObject"
-%typemap(jstype) void* "com.google.fpl.liquidfun.UserObject"
-%typemap(javain) void* "$javainput"
-%typemap(javaout) void* { 
-	return $jnicall; 
-}
-%typemap(out) void* {
-	jresult = (jobject) $1;
-}
-%typemap(in) void* {
-	// Why this bit is necessary: 
-	// http://developer.android.com/training/articles/perf-jni.html#local_and_global_references
-	$1 = jenv->NewGlobalRef($input);
-}
-
+/// b2BodyDef class
+// Ignore userData
+%ignore b2BodyDef::userData;
 
 /// b2Body class
 /// C++ implementation does not have default public ctors and dtors. Don't
@@ -58,12 +42,11 @@
 %warnfilter(516) b2Body::GetNext;
 %warnfilter(516) b2Body::GetWorld;
 
+// Ignore userData
 %ignore b2Body::m_userData;
+%ignore b2Body::GetUserData;
+%ignore b2Body::SetUserData;
 
 /// Include original .h file for SWIG
 /// The original file is simple enough we will just pull it in
 %include "../../../Box2D/Box2D/Dynamics/b2Body.h"
-
-// clear typemaps
-%clear void*;
-

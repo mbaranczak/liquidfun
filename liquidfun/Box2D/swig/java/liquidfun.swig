@@ -74,7 +74,6 @@ typedef unsigned char uint8;
 
 %include "Common/b2Draw.swig"
 %include "Common/b2Math.swig"
-%include "Common/UserObject.swig"
 
 %include "Dynamics/b2Body.swig"
 %include "Dynamics/b2Fixture.swig"
