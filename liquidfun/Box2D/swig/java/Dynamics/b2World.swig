@@ -45,5 +45,7 @@ public:
 	void SetContactListener(b2ContactListener *listener);
 	const b2Contact * GetContactList() const;
 	int32 GetContactCount() const;
+	b2Joint* CreateJoint(const b2JointDef* def);
+	void DestroyJoint(b2Joint* joint);
 };
 
