@@ -38,11 +38,7 @@ struct b2Exception {
 };
 %}
 
-// Typemaps for getting the raw address of output java.nio.ByteBuffer
-// This is mapping all function arguments with the signature
-//     (void* outBuf, int size)
-// to different Java intermediate ByteBuffer types.
-// See the Get*Buffer() functions for examples.
+// Typemaps for all the Copy*Buffer functions.
 %typemap(jni) (void* outBuf, int size) "jobject"
 %typemap(jtype) (void* outBuf, int size) "java.nio.ByteBuffer"
 %typemap(jstype) (void* outBuf, int size) "java.nio.ByteBuffer"
@@ -70,6 +66,23 @@ struct b2Exception {
         jenv->ThrowNew(clazz, g_liquidfunExceptions[$result].errorMsg);
     }
 }
+
+
+// Typemaps for all the Get*Buffer functions.
+%typemap(jni) b2Vec2* "jobject"
+%typemap(jtype) b2Vec2* "java.nio.ByteBuffer"
+%typemap(jstype) b2Vec2* "java.nio.ByteBuffer"
+%typemap(javain) b2Vec2* "$javainput"
+%typemap(javaout) b2Vec2* {
+    return $jnicall;
+}
+// This instantiates a new ByteBuffer on every call, which is not optimal. But if
+// we cache the ByteBuffer, then we'd also have to re-create it when the underlying
+// buffer is reallocated, which is tricky. 
+%typemap(out) b2Vec2* {
+	jresult = jenv->NewDirectByteBuffer($1, arg1->GetParticleCount());
+}
+
 
 // Disallow constructors and destructors; only made through b2World
 %nodefaultctor b2ParticleSystem;
@@ -101,6 +114,10 @@ public:
 	const b2ParticleBodyContact* GetBodyContacts() const;
 	int32 GetBodyContactCount() const;
 
+	b2Vec2* GetPositionBuffer();
+	b2Vec2* GetColorBuffer();
+	b2Vec2* GetWeightBuffer();
+
     int CopyPositionBuffer(
             int startIndex, int numParticles, void* outBuf, int size) const;
     int CopyColorBuffer(
@@ -122,3 +139,5 @@ public:
 
 /// Clear the typemaps
 %clear (void* outBuf, int size);
+%clear b2Vec2*;
+
