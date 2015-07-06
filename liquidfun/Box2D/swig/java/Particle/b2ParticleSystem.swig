@@ -68,7 +68,7 @@ struct b2Exception {
 }
 
 
-// Typemaps for all the Get*Buffer functions.
+// Typemaps for GetPositionBuffer() and GetVelocityBuffer().
 %typemap(jni) b2Vec2* "jobject"
 %typemap(jtype) b2Vec2* "java.nio.ByteBuffer"
 %typemap(jstype) b2Vec2* "java.nio.ByteBuffer"
@@ -80,7 +80,20 @@ struct b2Exception {
 // we cache the ByteBuffer, then we'd also have to re-create it when the underlying
 // buffer is reallocated, which is tricky. 
 %typemap(out) b2Vec2* {
-	jresult = jenv->NewDirectByteBuffer($1, arg1->GetParticleCount());
+	jresult = jenv->NewDirectByteBuffer($1, (arg1->GetParticleCount() * sizeof(b2Vec2)));
+}
+
+
+// Typemaps for GetColorBuffer().
+%typemap(jni) b2ParticleColor* "jobject"
+%typemap(jtype) b2ParticleColor* "java.nio.ByteBuffer"
+%typemap(jstype) b2ParticleColor* "java.nio.ByteBuffer"
+%typemap(javain) b2ParticleColor* "$javainput"
+%typemap(javaout) b2ParticleColor* {
+    return $jnicall;
+}
+%typemap(out) b2ParticleColor* {
+	jresult = jenv->NewDirectByteBuffer($1, (arg1->GetParticleCount() * sizeof(b2ParticleColor)));
 }
 
 
@@ -115,8 +128,8 @@ public:
 	int32 GetBodyContactCount() const;
 
 	b2Vec2* GetPositionBuffer();
-	b2Vec2* GetColorBuffer();
-	b2Vec2* GetWeightBuffer();
+	b2Vec2* GetVelocityBuffer();
+	b2ParticleColor* GetColorBuffer();
 
     int CopyPositionBuffer(
             int startIndex, int numParticles, void* outBuf, int size) const;
