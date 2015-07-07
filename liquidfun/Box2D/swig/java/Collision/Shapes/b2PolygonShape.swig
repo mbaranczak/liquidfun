@@ -57,4 +57,5 @@ public:
 };
 
 /// Clear the typemaps
-%clear (void* outBuf, int size);
+%clear (b2Vec2 *points, int32 count);
+

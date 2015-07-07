@@ -18,6 +18,19 @@
 
 %module b2ParticleSystem
 
+%typemap(javaimports) b2ParticleSystem "
+/** The Get*Buffer() methods return a direct ByteBuffer that wraps the
+ * underlying native buffer. They instantiate a new ByteBuffer every time 
+ * they're called, so avoid calling them too often. But also keep in mind that 
+ * the engine may reallocate the buffers when it's updated, in which case
+ * the corresponding ByteBuffer would become invalid. You can avoid these 
+ * complications by using instead the Copy*Buffer() methods (downside:
+ * copying the data takes time). Or you can allocate the buffers yourself
+ * and specify them with Set*Buffer() (downside: you lose the benefits of
+ * the build-in block allocator, which can resize the buffers if needed).
+ */
+"
+
 // error enums and strings for Java exceptions
 %{
 enum b2ExceptionType {
@@ -64,6 +77,69 @@ struct b2Exception {
         jclass clazz = jenv->FindClass(
                 g_liquidfunExceptions[$result].jniType);
         jenv->ThrowNew(clazz, g_liquidfunExceptions[$result].errorMsg);
+    }
+}
+
+
+// Typemaps for SetPositionBuffer and SetVelocityBuffer.
+%typemap(jni)     (b2Vec2* buffer, int32 capacity) "jobject"
+%typemap(jtype)   (b2Vec2* buffer, int32 capacity) "java.nio.ByteBuffer"
+%typemap(jstype)  (b2Vec2* buffer, int32 capacity) "java.nio.ByteBuffer"
+%typemap(javain)  (b2Vec2* buffer, int32 capacity) "$javainput"
+%typemap(javaout) (b2Vec2* buffer, int32 capacity) {
+    return $jnicall;
+}
+%typemap(in)      (b2Vec2* buffer, int32 capacity) {
+    $1 = (b2Vec2*) jenv->GetDirectBufferAddress($input);
+    $2 = jenv->GetDirectBufferCapacity($input);
+    if (($1 == NULL) && ($2 != 0)) {
+        SWIG_JavaThrowException(
+                jenv,
+                SWIG_JavaRuntimeException,
+                "Unable to get address of java.nio.ByteBuffer. "
+                "Is the ByteBuffer initialized?");
+    }
+}
+
+
+// Typemaps for SetColorBuffer().
+%typemap(jni)     (b2ParticleColor* buffer, int32 capacity) "jobject"
+%typemap(jtype)   (b2ParticleColor* buffer, int32 capacity) "java.nio.ByteBuffer"
+%typemap(jstype)  (b2ParticleColor* buffer, int32 capacity) "java.nio.ByteBuffer"
+%typemap(javain)  (b2ParticleColor* buffer, int32 capacity) "$javainput"
+%typemap(javaout) (b2ParticleColor* buffer, int32 capacity) {
+    return $jnicall;
+}
+%typemap(in)      (b2ParticleColor* buffer, int32 capacity) {
+    $1 = (b2ParticleColor*) jenv->GetDirectBufferAddress($input);
+    $2 = jenv->GetDirectBufferCapacity($input);
+    if (($1 == NULL) && ($2 != 0)) {
+        SWIG_JavaThrowException(
+                jenv,
+                SWIG_JavaRuntimeException,
+                "Unable to get address of java.nio.ByteBuffer. "
+                "Is the ByteBuffer initialized?");
+    }
+}
+
+
+// Typemaps for SetFlagsBuffer().
+%typemap(jni)     (uint32* buffer, int32 capacity) "jobject"
+%typemap(jtype)   (uint32* buffer, int32 capacity) "java.nio.ByteBuffer"
+%typemap(jstype)  (uint32* buffer, int32 capacity) "java.nio.ByteBuffer"
+%typemap(javain)  (uint32* buffer, int32 capacity) "$javainput"
+%typemap(javaout) (uint32* buffer, int32 capacity) {
+    return $jnicall;
+}
+%typemap(in)      (uint32* buffer, int32 capacity) {
+    $1 = (uint32*) jenv->GetDirectBufferAddress($input);
+    $2 = jenv->GetDirectBufferCapacity($input);
+    if (($1 == NULL) && ($2 != 0)) {
+        SWIG_JavaThrowException(
+                jenv,
+                SWIG_JavaRuntimeException,
+                "Unable to get address of java.nio.ByteBuffer. "
+                "Is the ByteBuffer initialized?");
     }
 }
 
@@ -131,6 +207,11 @@ public:
 	b2Vec2* GetVelocityBuffer();
 	b2ParticleColor* GetColorBuffer();
 
+	void SetPositionBuffer(b2Vec2* buffer, int32 capacity);
+	void SetVelocityBuffer(b2Vec2* buffer, int32 capacity);
+	void SetColorBuffer(b2ParticleColor* buffer, int32 capacity);
+	void SetFlagsBuffer(uint32* buffer, int32 capacity);
+
     int CopyPositionBuffer(
             int startIndex, int numParticles, void* outBuf, int size) const;
     int CopyColorBuffer(
@@ -153,4 +234,8 @@ public:
 /// Clear the typemaps
 %clear (void* outBuf, int size);
 %clear b2Vec2*;
+%clear b2ParticleColor*;
+%clear (b2Vec2* buffer, int32 capacity);
+%clear (b2ParticleColor* buffer, int32 capacity);
+%clear (uint32* buffer, int32 capacity);
 
